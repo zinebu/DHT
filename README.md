@@ -4,3 +4,5 @@
 
 <h1>Graphique de température </h1>
 ![clique ici](https://github.com/AhmedBerkat/DHT11project/assets/160866264/11e95655-0fc4-40bd-a8a4-05814ec1f34c)
+<h1>Graphique d'humidity </h1>
+![clique ici](https://github.com/AhmedBerkat/DHT11project/assets/160866264/35e04c63-2099-488e-97a2-30e964713407)
