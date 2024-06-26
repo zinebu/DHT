@@ -4,7 +4,7 @@
 
 <h1>Graphique de température </h1>
 <h3>clique ici</h3>
-![Capture d'écran 2024-06-26 172934](https://github.com/AhmedBerkat/DHT11project/assets/160866264/5d0c6d9a-0f9e-4bf1-8341-989ab4b1a088)
+(https://github.com/AhmedBerkat/DHT11project/assets/160866264/5d0c6d9a-0f9e-4bf1-8341-989ab4b1a088)
 <h1>Graphique d'humidity </h1>
 <h3>clique ici</h3>
 (https://github.com/AhmedBerkat/DHT11project/assets/160866264/35e04c63-2099-488e-97a2-30e964713407)
