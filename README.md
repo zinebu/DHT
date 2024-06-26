@@ -8,3 +8,6 @@
 <h1>Graphique d'humidity </h1>
 <h3>clique ici</h3>
 (https://github.com/AhmedBerkat/DHT11project/assets/160866264/35e04c63-2099-488e-97a2-30e964713407)
+
+<h2>  le lien vers le code Arduino: <a href="https://github.com/AhmedBerkat/arduino-coed" >clique ici </a> </h2>
+
