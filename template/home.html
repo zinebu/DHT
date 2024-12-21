@@ -3,74 +3,97 @@
 <head>
     {% load static %}
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Accueil</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
-         {% load static %}
         body {
-            background-image: url("{% static 'images/1_Blog_Featured_Image-scaled-1.jpg' %}");
-            background-size: cover;
-            background-position: left top;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            font-family: Arial, sans-serif;
-            color: white;
+            font-family: 'Roboto', sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
             margin: 0;
-            padding: 0;
+            height: 100vh;
             display: flex;
             flex-direction: column;
+            justify-content: center;
             align-items: center;
-            justify-content: top;
-            height: 50vh;
         }
 
         .content {
             text-align: center;
-
+            max-width: 800px;
+            animation: fadeIn 1.5s ease-in-out;
         }
 
         h1 {
-            color: white;
+            color: #333;
             margin-top: 0;
-            background-color: rgba(0, 0, 0, 0); /* Semi-transparent black background */
-            padding: 10px 20px;
+            background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
+            padding: 20px;
             border-radius: 10px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            font-size: 2.5em;
+            animation: slideInDown 1s ease-in-out;
         }
 
-        p {color: white;
+        p {
+            color: #555;
             margin: 20px auto;
-            width: 80%;
             font-size: 1.2em;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+            animation: slideInUp 1s ease-in-out;
         }
 
         ul {
-            position: relative;
-            top: 100px;
-            left: 500px;
-            list-style-type: none;
             padding: 0;
-            margin: 20px 0;
+            list-style-type: none;
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
         }
 
         ul li {
-            display: inline;
             margin: 0 10px;
         }
 
         ul li a {
             text-decoration: none;
-            padding: 10px 20px;
-            background-color: blue;
+            padding: 12px 25px;
+            background-color: #007bff;
             color: white;
             border-radius: 5px;
-            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
-            transition: background-color 0.3s, transform 0.3s;
+            transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            font-size: 1.1em;
+            animation: pulse 1.5s infinite;
         }
 
         ul li a:hover {
-            background-color: darkgreen;
-            transform: scale(1.05);
+            background-color: #0056b3;
+            transform: scale(1.1);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        @keyframes slideInDown {
+            0% { transform: translateY(-100px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes slideInUp {
+            0% { transform: translateY(100px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); }
+            50% { transform: scale(1.1); box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); }
+            100% { transform: scale(1); box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); }
         }
     </style>
 </head>
@@ -81,8 +104,7 @@
             Bienvenue sur notre site dédié à l'Internet des objets (IoT) ! Ici, vous pouvez afficher les données de température et d'humidité en temps réel sous forme de tableaux et de graphiques, ainsi que consulter les données JSON. Utilisez le bouton ci-dessous pour accéder aux différentes pages.
         </p>
         <ul>
-            <li><a href="{% url 'table' %}">application</a></li>
-
+            <li><a href="{% url 'table' %}">Application</a></li>
         </ul>
     </div>
 </body>
