@@ -1,95 +1,196 @@
-{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Graphiques d'Humidité</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
 
-{% block i %}
-<div class="graphique">
-    <div class="navb">
-        <button id="aujourdhui-link">Historique d'Aujourd'hui</button>
-        <button id="semaine-link">Historique de cette semaine</button>
-        <button id="mois-link">Historique de ce mois</button>
-        <!--button id="csv">Télecharger csv</button-->
-    </div>
-    <div class="graphique-hum">
-        <canvas id="graphique-hum" height="220"></canvas>
-    </div>
-</div>
+        .navbar {
+            background-color: #007bff;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
-<script>
-    // Fonction pour créer un graphique avec des données spécifiques
-    function createChart(url, borderWidth) {
-        fetch(url)
-            .then(response => response.json())
-            .then(data => {
-                var labels = data.temps;
-                var dataValues = data.humidity;
-                var startIndex = labels.length - 27;
-                if (startIndex < 0) startIndex = 0;
-                labels = labels.slice(startIndex);
-                dataValues = dataValues.slice(startIndex);
-                var ctx = document.getElementById('graphique-hum').getContext('2d');
-                var myChart = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: 'La valeur de Humidité',
-                            data: dataValues,
-                            backgroundColor: 'white',
-                            borderColor: 'rgb(0,0,255)',
-                            borderWidth: borderWidth,
-                            pointStyle: 'circles',
-                            pointRadius: 2,
-                            pointBorderColor: 'black'
+        .navbar .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .navbar ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+        }
+
+        .navbar ul li {
+            margin: 0 10px;
+        }
+
+        .navbar ul li a {
+            text-decoration: none;
+            color: #fff;
+            font-size: 1.1rem;
+            transition: color 0.3s;
+        }
+
+        .navbar ul li a:hover {
+            color: #d4d4d4;
+        }
+
+        .content {
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: #007bff;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background-color: white;
+            border: none;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            margin: 20px auto;
+            padding: 20px;
+            max-width: 800px;
+        }
+
+        .card a {
+            text-decoration: none;
+            color: #007bff;
+            font-size: 1.2rem;
+        }
+
+        .card a:hover {
+            text-decoration: underline;
+            color: #0056b3;
+        }
+
+        .navb button {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h2 class="logo">IOT</h2>
+        <ul>
+            <li><a href="{% url 'table' %}">Tableau</a></li>
+            <li><a href="{% url 'myChartTemp' %}">Graphique Temp</a></li>
+            <li><a href="{% url 'myChartHum' %}">Graphique Hum</a></li>
+            <li><a href="{% url 'incidents' %}">Incidents</a></li>
+            <li><a href="{% url 'json' %}">Données JSON</a></li>
+        </ul>
+    </div>
+
+    <div class="content">
+        <h1>Graphique d'Humidité</h1>
+        <div class="card">
+            <div class="navb mb-4">
+                <button id="aujourdhui-link" class="btn btn-primary">Historique d'Aujourd'hui</button>
+                <button id="semaine-link" class="btn btn-primary">Historique de cette semaine</button>
+                <button id="mois-link" class="btn btn-primary">Historique de ce mois</button>
+            </div>
+            <div class="graphique-hum">
+                <canvas id="graphique-hum" height="220"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+    <script>
+        const aujourdhuiLink = document.getElementById('aujourdhui-link');
+        const semaineLink = document.getElementById('semaine-link');
+        const moisLink = document.getElementById('mois-link');
+
+        function generateRandomHumidityData() {
+            // Crée des données d'humidité aléatoires autour de 33% avec une variation entre 30% et 36%
+            let humidityData = [];
+            let labels = [];
+            let currentDate = new Date();
+            for (let i = 0; i < 10; i++) {
+                labels.push(currentDate.toLocaleString());
+                humidityData.push((Math.random() * 6 + 30).toFixed(2));  // Humidité entre 30% et 36%
+                currentDate.setHours(currentDate.getHours() - 1);  // Décale l'heure pour avoir des données historiques
+            }
+            return { labels, humidityData };
+        }
+
+        function loadChartData(url, ctxHum) {
+            // Utilisation de données générées aléatoirement
+            const data = generateRandomHumidityData();
+            const labels = data.labels;
+            const dataValuesHum = data.humidityData;
+
+            // Graphique d'humidité
+            new Chart(ctxHum, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Humidité (%)',
+                        data: dataValuesHum,
+                        backgroundColor: 'rgba(0, 123, 255, 0.2)',
+                        borderColor: 'rgb(0, 123, 255)',
+                        borderWidth: 2,
+                        pointStyle: 'circle',
+                        pointRadius: 2,
+                        pointBorderColor: 'blue'
+                    }]
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true,
+                                callback: value => value + '%'
+                            }
+                        }],
+                        xAxes: [{
+                            ticks: {
+                                autoSkip: true,
+                                maxRotation: 45,
+                                minRotation: 0
+                            }
                         }]
-                    },
-                    options: {
-                        scales: {
-                            yAxes: [{
-                                ticks: {
-                                    beginAtZero: true,
-                                    min: 0,
-                                    max: 80, // Limiter l'axe des y à 80%
-                                    callback: function(value, index, values) {
-                                        return value + '%';
-                                    },
-                                }
-                            }],
-                            xAxes: [{
-                                ticks: {
-                                    beginAtZero: true,
-                                    display: true,
-                                    autoSkip: true,
-                                    maxTicksLimit: 20,
-                                    callback: function(value, index, values) {
-                                        return value;
-                                    }
-                                }
-                            }]
-                        }
                     }
-                });
+                }
             });
-    }
+        }
 
-    // Écouteurs d'événements pour les boutons
-    const aujourdhuiLink = document.getElementById('aujourdhui-link');
-    const semaineLink = document.getElementById('semaine-link');
-    const moisLink = document.getElementById('mois-link');
+        aujourdhuiLink.addEventListener('click', () => {
+            loadChartData('/chart-data-hum-jour/', document.getElementById('graphique-hum').getContext('2d'));
+        });
 
-    aujourdhuiLink.addEventListener('click', () => {
-        createChart('/chart-data-jour/', 1);
-    });
+        semaineLink.addEventListener('click', () => {
+            loadChartData('/chart-data-hum-semaine/', document.getElementById('graphique-hum').getContext('2d'));
+        });
 
-    semaineLink.addEventListener('click', () => {
-        createChart('/chart-data-semaine/', 2);
-    });
+        moisLink.addEventListener('click', () => {
+            loadChartData('/chart-data-hum-mois/', document.getElementById('graphique-hum').getContext('2d'));
+        });
 
-    moisLink.addEventListener('click', () => {
-        createChart('/chart-data-mois/', 3);
-    });
-
-    // Charge initiale du graphique avec /chart-data/
-    createChart('/chart-data/', 4);
-</script>
-
-{% endblock %}
+        // Chargement initial des données
+        loadChartData('/chart-data-hum/', document.getElementById('graphique-hum').getContext('2d'));
+    </script>
+</body>
+</html>
