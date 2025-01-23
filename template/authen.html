@@ -1,14 +1,94 @@
-{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authentification</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
 
-    <head>
-        <title>Login</title>
-        <link rel="stylesheet" href="{% static 'css/title.png' %}">
-    </head>
-    <body>
-        <div class="project">
-        {% block content %}{% endblock content %}
-        {%  if user.is_authenticated %}
-            <p>Vous êtes connecté en tant que {{ request.user }}. <a href="{% url 'logout' %}">Se déconnecter</a></p>
+        .auth-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+            width: 100%;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #007bff;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        .btn-primary {
+            width: 100%;
+        }
+
+        .footer-text {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 0.9em;
+            color: #555;
+        }
+
+        .footer-text a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .footer-text a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        {% block content %}
+        {% if user.is_authenticated %}
+            <!-- Contenu pour les utilisateurs connectés -->
+            <h2>Bienvenue, {{ user.username }}</h2>
+            <p>Vous êtes connecté.</p>
+            <a href="{% url 'index' %}" class="btn btn-success">Accéder</a> 
+            <a href="{% url 'authen' %}" class="btn btn-primary">Se déconnecter</a>
+        {% else %}
+            <!-- Formulaire de connexion -->
+            <h2>Connexion</h2>
+            <form method="post" action="{% url 'authen' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="username">Nom d'utilisateur</label>
+                    <input type="text" name="username" id="username" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Mot de passe</label>
+                    <input type="password" name="password" id="password" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Se connecter</button>
+            </form>
+            <p class="footer-text">
+               Si vous n'avez pas de compte,contactez votre administrateur </a>.
+            </p>
         {% endif %}
+        {% endblock content %}
     </div>
-    </body>
+</body>
+</html>
+
+

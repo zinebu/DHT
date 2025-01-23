@@ -1,14 +1,26 @@
 {% load static %}
 
-    <head>
-        <title>Login</title>
-        <link rel="stylesheet" href="{% static 'css/title.png' %}">
-    </head>
-    <body>
-        <div class="project">
-        {% block content %}{% endblock content %}
-        {%  if user.is_authenticated %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <div class="project">
+        <h2>Se connecter</h2>
+        
+        {% if user.is_authenticated %}
             <p>Vous êtes connecté en tant que {{ request.user }}. <a href="{% url 'logout' %}">Se déconnecter</a></p>
+        {% else %}
+            <form method="post" action="{% url 'authen' %}">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit">Accéder</button>
+            </form>
         {% endif %}
     </div>
-    </body>
+</body>
+</html>

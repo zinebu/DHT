@@ -15,7 +15,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
 from django.contrib.auth import logout
-
+from .models import Incident
 from django.contrib.auth.forms import UserCreationForm
 
 def home(request):
@@ -148,3 +148,7 @@ def sendtele():
     bot = telepot.Bot(token)
     bot.sendMessage(rece_id, 'la température depasse la normale')
     print(bot.sendMessage(rece_id, 'OK.'))
+
+def incidents_view(request):
+    incidents = Incident.objects.order_by('-timestamp')[:10]  # Récupérer les 10 derniers incidents
+    return render(request, 'incidents.html', {'incidents': incidents})

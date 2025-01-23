@@ -1,36 +1,62 @@
-<head>
-    {% load static %}
-<link rel="stylesheet" href="{% static 'css/index.css' %}">
+{% extends 'base.html' %}
 
-</head>
-<body>
-    {% load static %}
+{% block i %}
 
-  <div class="navbar"  style="background-image: url({% static 'images/HD.jpg' %}) ; ">
-    <nav >
+<!-- Inclure jQuery pour la soumission dynamique du formulaire -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-            <ul>
-                   <li>  <a href="{% url 'table' %}" >Table</a></li>
-                    <li>  <a href="{% url 'myChartTemp' %}" >Chart Temp</a></li>
-                    <li>  <a href="{% url 'myChartHum' %}" >Chart Hum</a></li>
-                    <li>  <a href="{% url 'json' %}" >Json</a></li>
+<div class="container mt-5">
+    <!-- Titre -->
+    <div class="row mb-4">
+        <div class="col text-center">
+            <h3>Dashboard / Table</h3>
+        </div>
+    </div>
 
-            </ul>
-
-            <form method="post" action="{% url 'index_view' %}">
+    <!-- Formulaire de sélection -->
+    <div class="row justify-content-center mb-4">
+        <div class="col-md-6">
+            <form method="post" id="my-form" class="form-inline">
                 {% csrf_token %}
+                {{ form|add_class:"form-control w-100" }}
+            </form>
+        </div>
+    </div>
 
-                <select id="select" name="select_field">
-
-                  <option value="signup" selected>S'inscrire</option>
-                  <option value="logout">Se déconnecter</option>
-                </select>
-
-              </form>
-            <p> </p>
-
-
-    </nav>
+    <!-- Tableau des données -->
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Température (°C)</th>
+                            <th>Humidité (%)</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for record in data %}
+                        <tr>
+                            <td>{{ record.id }}</td>
+                            <td>{{ record.temp }}</td>
+                            <td>{{ record.hum }}</td>
+                            <td>{{ record.dt }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
 
-</body>
+<script>
+    // Soumettre automatiquement le formulaire lorsqu'un élément est sélectionné
+    $('#mon_select').change(function() {
+        $('#my-form').submit();
+    });
+</script>
+
+{% endblock i %}
