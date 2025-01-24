@@ -12,12 +12,14 @@ urlpatterns = [
     path('myChartHum/', views.graphiqueHum, name='myChartHum'),
     path('chart-data/', views.chart_data, name='chart-data'),
     path('authen/', auth_views.LoginView.as_view(template_name='authen.html'), name='authen'),
-    path('logout/', auth_views.LogoutView.as_view(next_page='/'), name='logout'),
+    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('table/', views.table, name='table'),
     path('chart-data-jour/',views.chart_data_jour,name='chart-data-jour'),
     path('chart-data-semaine/',views.chart_data_semaine,name='chart-data-semaine'),
     path('chart-data-mois/',views.chart_data_mois,name='chart-data-mois'),
     path('', views.home, name='home'),
     path('incidents/', views.incidents_view, name='incidents'),
+     path('gestion_utilisateurs/', views.gestion_utilisateurs, name='gestion_utilisateurs'),
+     path('manage-admins/', views.manage_admins, name='manage_admins'),
 
 ]
