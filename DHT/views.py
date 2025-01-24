@@ -152,3 +152,5 @@ def sendtele():
 def incidents_view(request):
     incidents = Incident.objects.order_by('-timestamp')[:10]  # Récupérer les 10 derniers incidents
     return render(request, 'incidents.html', {'incidents': incidents})
+
+
