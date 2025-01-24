@@ -2,6 +2,7 @@ from django.urls import path
 from . import views
 from . import api
 from django.contrib.auth import views as auth_views
+from django.urls import path, include
 
 urlpatterns = [
     path("api",api.Dlist,name='json'),
@@ -19,7 +20,8 @@ urlpatterns = [
     path('chart-data-mois/',views.chart_data_mois,name='chart-data-mois'),
     path('', views.home, name='home'),
     path('incidents/', views.incidents_view, name='incidents'),
-     path('gestion_utilisateurs/', views.gestion_utilisateurs, name='gestion_utilisateurs'),
-     path('manage-admins/', views.manage_admins, name='manage_admins'),
+    path('gestion_utilisateurs/', views.gestion_utilisateurs, name='gestion_utilisateurs'),
+    path('manage-admins/', views.manage_admins, name='manage_admins'),
+    path('accounts/', include('django.contrib.auth.urls')),
 
 ]
