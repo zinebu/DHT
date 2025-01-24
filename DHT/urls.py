@@ -19,5 +19,6 @@ urlpatterns = [
     path('chart-data-mois/',views.chart_data_mois,name='chart-data-mois'),
     path('', views.home, name='home'),
     path('incidents/', views.incidents_view, name='incidents'),
+     path('sensors/api/sensor-data/', api.Dlist, name='sensor-data')
 
 ]
