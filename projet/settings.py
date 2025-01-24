@@ -10,6 +10,11 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+# Expiration de la session à la fermeture du navigateur
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+# Durée de vie des cookies de session : 0 pour ne pas les conserver après la fermeture du navigateur
+SESSION_COOKIE_AGE = 300
 from pathlib import Path
 LOGIN_REDIRECT_URL = 'table'  # Redirige vers la page des données
 LOGOUT_REDIRECT_URL = '/authen/'  # Redirige vers la page d'authentification après la déconnexion
