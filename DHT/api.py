@@ -41,14 +41,14 @@ def Dlist(request):
             # Vérifier si la température dépasse le seuil de 15°C
             if derniere_temperature > 25:
                 alert_message = (
-                    "La température dépasse le seuil de 15°C, veuillez intervenir immédiatement "
+                    "La température dépasse le seuil de 25°C, veuillez intervenir immédiatement "
                     "pour vérifier et corriger cette situation."
                 )
 
                 # Envoyer une alerte par email
                 subject = 'Alerte de température élevée'
                 email_from = settings.EMAIL_HOST_USER
-                recipient_list = ['zineb.msp@gmail.com']
+                recipient_list = ['salma.ayache.23@ump.ac.ma']
                 send_mail(subject, alert_message, email_from, recipient_list)
 
                 # Envoyer une alerte via WhatsApp
