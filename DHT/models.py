@@ -2,9 +2,9 @@
 # Create your models here.
 from django.db import models
 class Dht11(models.Model):
-  temp = models.FloatField(null=True)
-  hum = models.FloatField(null=True)
-  dt = models.DateTimeField(auto_now_add=True,null=True)
+  temp = models.FloatField(null=False, blank=False)  # Empêche les valeurs nulles
+  hum = models.FloatField(null=False, blank=False)   # Empêche les valeurs nulles
+  dt = models.DateTimeField(auto_now_add=True)
 class Incident(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     temperature = models.DecimalField(max_digits=5, decimal_places=2)

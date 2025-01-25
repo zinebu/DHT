@@ -10,6 +10,11 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+# Expiration de la session à la fermeture du navigateur
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+# Durée de vie des cookies de session : 0 pour ne pas les conserver après la fermeture du navigateur
+SESSION_COOKIE_AGE = 300
 from pathlib import Path
 LOGIN_REDIRECT_URL = 'table'  # Redirige vers la page des données
 LOGOUT_REDIRECT_URL = '/authen/'  # Redirige vers la page d'authentification après la déconnexion
@@ -28,7 +33,7 @@ SECRET_KEY = 'django-insecure-&d)%-+-i(-nqrm-1q*-1mhn@jwn#(4^bk_bikr5plz=de%&(@&
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.1.8','192.168.8.101', '*']
+ALLOWED_HOSTS = [' 192.168.0.180', '*']
 
 
 
@@ -136,9 +141,10 @@ STATIC_ROOT=os.path.join(BASE_DIR,'staticfiles')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
 EMAIL_HOST = 'smtp.gmail.com' # remplacer avec l'adresse SMTP de votrefournisseur de messagerie
 EMAIL_PORT = 587 # remplacer avec le port SMTP de votre fournisseur demessagerie
 EMAIL_USE_TLS = True # ou False, selon la configuration de votrefournisseur de messagerie
-EMAIL_HOST_USER = '........@gmail.com' # remplacer avec votre adresse email
-EMAIL_HOST_PASSWORD = '# remplacer avec votre mot de passe email'
+EMAIL_HOST_USER = 'salma.ayache.23@ump.ac.ma' # remplacer avec votre adresse email
+EMAIL_HOST_PASSWORD = 'wdgs dkpj elfp mgbt'
 
