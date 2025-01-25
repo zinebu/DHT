@@ -296,3 +296,46 @@ def logout_view(request):
     logger.info("User logged out and session flushed.")
     return redirect('authen')
 
+from django.http import JsonResponse
+from datetime import datetime, timedelta
+
+# Exemple de fonction pour obtenir les données de température pour aujourd'hui
+def get_temperature_data_aujourdhui(request):
+    # Exemple de données générées aléatoirement
+    labels = []
+    tempData = []
+    current_time = datetime.now()
+
+    for i in range(10):
+        labels.append(current_time.strftime('%Y-%m-%d %H:%M'))
+        tempData.append(round(14 + (random.random() * 4 - 2), 2))  # Température entre 12°C et 16°C
+        current_time -= timedelta(hours=1)  # Décaler d'une heure
+
+    return JsonResponse({'labels': labels, 'tempData': tempData})
+
+# Exemple de fonction pour obtenir les données de température pour la semaine
+def get_temperature_data_semaine(request):
+    labels = []
+    tempData = []
+    current_time = datetime.now()
+
+    for i in range(7):
+        labels.append((current_time - timedelta(days=i)).strftime('%Y-%m-%d'))
+        tempData.append(round(14 + (random.random() * 4 - 2), 2))  # Température entre 12°C et 16°C
+
+    return JsonResponse({'labels': labels, 'tempData': tempData})
+
+# Exemple de fonction pour obtenir les données de température pour le mois
+def get_temperature_data_mois(request):
+    labels = []
+    tempData = []
+    current_time = datetime.now()
+
+    for i in range(30):
+        labels.append((current_time - timedelta(days=i)).strftime('%Y-%m-%d'))
+        tempData.append(round(14 + (random.random() * 4 - 2), 2))  # Température entre 12°C et 16°C
+
+    return JsonResponse({'labels': labels, 'tempData': tempData})
+
+
+

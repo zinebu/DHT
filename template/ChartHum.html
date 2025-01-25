@@ -94,12 +94,12 @@
     <div class="navbar">
         <h2 class="logo">IOT</h2>
         <ul>
-            <li><a href="{% url 'table' %}">Tableau</a></li>
-            <li><a href="{% url 'myChartTemp' %}">Graphique Temp</a></li>
-            <li><a href="{% url 'myChartHum' %}">Graphique Hum</a></li>
-            <li><a href="{% url 'incidents' %}">Incidents</a></li>
-            <li><a href="{% url 'json' %}">Données JSON</a></li>
-            <li><a href="{% url 'gestion_utilisateurs' %}">Creation Admins</a></li>
+        <li><a href="{% url 'table' %}">Table</a></li>
+        <li><a href="{% url 'myChartTemp' %}">Graphique Temperature</a></li>
+        <li><a href="{% url 'myChartHum' %}">Graphique Humidité</a></li>
+        <li><a href="{% url 'incidents' %}">Incidents</a></li>
+        <li><a href="{% url 'json' %}">Json</a></li>
+        <li><a href="{% url 'gestion_utilisateurs' %}">Gestion utilisateurs</a></li>
         </ul>
     </div>
 
@@ -123,26 +123,66 @@
         const semaineLink = document.getElementById('semaine-link');
         const moisLink = document.getElementById('mois-link');
 
-        function generateRandomHumidityData() {
-            // Crée des données d'humidité aléatoires autour de 33% avec une variation entre 30% et 36%
+        // Fonction pour générer des dates aléatoires dans une période donnée
+        function generateRandomDate(period) {
+            let date = new Date();
+            let randomDate;
+
+            if (period === 'semaine') {
+                // Génère une date aléatoire dans la semaine précédente (7 jours)
+                const randomOffset = Math.floor(Math.random() * 7);
+                date.setDate(date.getDate() - randomOffset);
+                randomDate = new Date(date);
+            } else if (period === 'mois') {
+                // Génère une date aléatoire dans le mois actuel
+                const randomDay = Math.floor(Math.random() * 31) + 1;
+                date.setDate(randomDay);
+                randomDate = new Date(date);
+            } else {
+                // Pour la journée, affiche simplement la date actuelle
+                randomDate = new Date();
+            }
+            return randomDate;
+        }
+
+        // Fonction pour générer des données d'humidité aléatoires
+        function generateRandomHumidityData(period) {
             let humidityData = [];
             let labels = [];
             let currentDate = new Date();
-            for (let i = 0; i < 10; i++) {
-                labels.push(currentDate.toLocaleString());
-                humidityData.push((Math.random() * 6 + 30).toFixed(2));  // Humidité entre 30% et 36%
-                currentDate.setHours(currentDate.getHours() - 1);  // Décale l'heure pour avoir des données historiques
+
+            if (period === 'jour') {
+                for (let i = 0; i < 10; i++) {
+                    labels.push(currentDate.toLocaleString());
+                    humidityData.push((Math.random() * 15 + 50).toFixed(2)); // Humidité entre 50% et 65%
+                    currentDate.setHours(currentDate.getHours() - 1); // Décale l'heure pour avoir des données horaires
+                }
+            } else if (period === 'semaine') {
+                // Générer des données pour les 7 derniers jours avec des dates aléatoires
+                for (let i = 0; i < 7; i++) {
+                    const randomDate = generateRandomDate('semaine');
+                    labels.push(randomDate.toLocaleDateString()); // Affiche la date dans un format lisible
+                    humidityData.push((Math.random() * 15 + 50).toFixed(2)); // Humidité entre 50% et 65%
+                }
+            } else if (period === 'mois') {
+                // Générer des données pour les 25 premiers jours du mois avec des dates aléatoires
+                for (let i = 0; i < 25; i++) {
+                    const randomDate = generateRandomDate('mois');
+                    labels.push(randomDate.toLocaleDateString()); // Affiche la date dans un format lisible
+                    humidityData.push((Math.random() * 15 + 50).toFixed(2)); // Humidité entre 50% et 65%
+                }
             }
+
             return { labels, humidityData };
         }
 
-        function loadChartData(url, ctxHum) {
-            // Utilisation de données générées aléatoirement
-            const data = generateRandomHumidityData();
+        // Fonction pour charger les données du graphique
+        function loadChartData(period) {
+            const data = generateRandomHumidityData(period);
             const labels = data.labels;
             const dataValuesHum = data.humidityData;
 
-            // Graphique d'humidité
+            const ctxHum = document.getElementById('graphique-hum').getContext('2d');
             new Chart(ctxHum, {
                 type: 'line',
                 data: {
@@ -179,19 +219,19 @@
         }
 
         aujourdhuiLink.addEventListener('click', () => {
-            loadChartData('/chart-data-hum-jour/', document.getElementById('graphique-hum').getContext('2d'));
+            loadChartData('jour');
         });
 
         semaineLink.addEventListener('click', () => {
-            loadChartData('/chart-data-hum-semaine/', document.getElementById('graphique-hum').getContext('2d'));
+            loadChartData('semaine');
         });
 
         moisLink.addEventListener('click', () => {
-            loadChartData('/chart-data-hum-mois/', document.getElementById('graphique-hum').getContext('2d'));
+            loadChartData('mois');
         });
 
-        // Chargement initial des données
-        loadChartData('/chart-data-hum/', document.getElementById('graphique-hum').getContext('2d'));
+        // Chargement initial des données pour aujourd'hui
+        loadChartData('jour');
     </script>
 </body>
 </html>

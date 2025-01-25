@@ -25,5 +25,6 @@ urlpatterns = [
     path('manage-admins/', views.manage_admins, name='manage_admins'),
     path('accounts/', include('django.contrib.auth.urls')),
     path('sensors/api/sensor-data/', api.Dlist, name='dlist')
+   
 
 ]
