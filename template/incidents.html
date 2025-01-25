@@ -109,10 +109,10 @@
                 <tbody>
                     {% for incident in incidents %}
                         <tr>
-                            <td>{{ incident.timestamp }}</td>
-                            <td>{{ incident.temperature }}°</td>
-                            <td>{{ incident.operator }}</td>
-                            <td>{{ incident.notification_app }}</td>
+                            <td>{{ Incidents.timestamp }}</td>
+                            <td>{{ incidents.temperature }}°</td>
+                            <td>{{ incidents.operator }}</td>
+                            <td>{{ incidents.notification_app }}</td>
                         </tr>
                     {% empty %}
                         <tr>

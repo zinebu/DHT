@@ -7,6 +7,8 @@ from django.core.mail import send_mail
 from django.conf import settings
 from twilio.rest import Client
 import requests
+from .models import Incident
+from .serializers import IncidentSerializer
 
 # Fonction pour envoyer des messages Telegram
 def send_telegram_message(token, chat_id, message):
@@ -78,3 +80,9 @@ def Dlist(request):
         else:
             # Retourner les erreurs de validation
             return Response(serial.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+def incidents_view(request):
+            incidents = Incident.objects.order_by('-timestamp')[:10]
+            serializer = IncidentSerializer(incidents, many=True)
+            return Response(serializer.data)
