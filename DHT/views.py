@@ -27,7 +27,17 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 import logging
+import json
 
+def incidents_to_json(request):
+    # Récupérer tous les incidents de la base de données
+    incidents = Incident.objects.all()
+
+    # Convertir les incidents en une liste de dictionnaires
+    incidents_data = list(incidents.values('timestamp', 'temperature', 'operator', 'notification_app'))
+
+    # Retourner la réponse en format JSON
+    return JsonResponse(incidents_data, safe=False)
 def home(request):
     return render(request, 'home.html')
 

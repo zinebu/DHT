@@ -9,6 +9,7 @@ from twilio.rest import Client
 import requests
 from .models import Incident
 from .serializers import IncidentSerializer
+from django.shortcuts import render
 
 # Fonction pour envoyer des messages Telegram
 def send_telegram_message(token, chat_id, message):
@@ -83,6 +84,6 @@ def Dlist(request):
 
 @api_view(['GET'])
 def incidents_view(request):
-            incidents = Incident.objects.order_by('-timestamp')[:10]
-            serializer = IncidentSerializer(incidents, many=True)
-            return Response(serializer.data)
+    incidents = Incident.objects.all().order_by('-timestamp')  # Trie les incidents par date (du plus récent au plus ancien)
+    return render(request, 'incidents.html', {'incidents': incidents})
+

@@ -20,6 +20,7 @@ urlpatterns = [
     path('chart-data-mois/',views.chart_data_mois,name='chart-data-mois'),
     path('', views.home, name='home'),
     path('incidents/', views.incidents_view, name='incidents'),
+     path('incidents/json/', views.incidents_to_json, name='incidents_json'),
     path('gestion_utilisateurs/', views.gestion_utilisateurs, name='gestion_utilisateurs'),
     path('manage-admins/', views.manage_admins, name='manage_admins'),
     path('accounts/', include('django.contrib.auth.urls')),

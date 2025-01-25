@@ -10,13 +10,13 @@
     <style>
         body {
             font-family: 'Roboto', sans-serif;
-            background-color: #f8f9fa;
+            background-color: #f4f6f9;
             margin: 0;
             padding: 0;
         }
 
         .navbar {
-            background-color: #007bff;
+            background: linear-gradient(45deg, #007bff, #00bfff);
             padding: 15px;
             display: flex;
             justify-content: space-between;
@@ -39,7 +39,7 @@
         }
 
         .navbar ul li {
-            margin: 0 10px;
+            margin: 0 15px;
         }
 
         .navbar ul li a {
@@ -54,7 +54,7 @@
         }
 
         .content {
-            padding: 20px;
+            padding: 40px 20px;
             text-align: center;
         }
 
@@ -62,20 +62,65 @@
             font-size: 2.5rem;
             color: #007bff;
             margin-bottom: 20px;
+            font-weight: bold;
         }
 
         .card {
             background-color: white;
             border: none;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
             border-radius: 10px;
             margin: 20px auto;
-            padding: 20px;
-            max-width: 1000px;
+            padding: 30px;
+            max-width: 1200px;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
         }
 
         .table th, .table td {
             vertical-align: middle;
+            text-align: center;
+            padding: 12px;
+        }
+
+        .table-striped tbody tr:nth-child(odd) {
+            background-color: #f9f9f9;
+        }
+
+        .table-striped tbody tr:nth-child(even) {
+            background-color: #ffffff;
+        }
+
+        .table th {
+            background-color: #007bff;
+            color: white;
+            font-weight: bold;
+        }
+
+        .table td {
+            font-size: 1rem;
+        }
+
+        .table a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .table a:hover {
+            text-decoration: underline;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #007bff;
+            color: white;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
         }
 
     </style>
@@ -87,7 +132,6 @@
             <li><a href="{% url 'table' %}">Table</a></li>
             <li><a href="{% url 'myChartTemp' %}">Graphique Temperature</a></li>
             <li><a href="{% url 'myChartHum' %}">Graphique Humidité</a></li>
-            
             <li><a href="{% url 'incidents' %}">Incidents</a></li>
             <li><a href="{% url 'json' %}">Json</a></li>
             <li><a href="{% url 'gestion_utilisateurs' %}">gestion Utilisateurs</a></li>
@@ -107,21 +151,45 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for incident in incidents %}
-                        <tr>
-                            <td>{{ Incidents.timestamp }}</td>
-                            <td>{{ incidents.temperature }}°</td>
-                            <td>{{ incidents.operator }}</td>
-                            <td>{{ incidents.notification_app }}</td>
-                        </tr>
-                    {% empty %}
-                        <tr>
-                            <td colspan="4">Aucun incident récent à afficher.</td>
-                        </tr>
-                    {% endfor %}
+                    <!-- Exemple d'incident 1 -->
+                    <tr>
+                        <td>2025-01-25 15:30:00</td>
+                        <td>26.5°C</td>
+                        <td>AYACHE SALMA</td>
+                        <td>Telegram</td>
+                    </tr>
+                    <!-- Exemple d'incident 2 -->
+                    <tr>
+                        <td>2025-01-24 12:45:00</td>
+                        <td>25.2°C</td>
+                        <td>AZIZ ZINEB</td>
+                        <td>WhatsApp</td>
+                    </tr>
+                    <!-- Exemple d'incident 3 -->
+                    <tr>
+                        <td>2025-01-22 08:20:00</td>
+                        <td>25.8°C</td>
+                        <td>AYACHE SALMA</td>
+                        <td>Email</td>
+                    </tr>
+                    <!-- Exemple d'incident 4 -->
+                    <tr>
+                        <td>2025-01-21 08:20:00</td>
+                        <td>26.4°C</td>
+                        <td>ZINEB AZIZ</td>
+                        <td>WhatsApp</td>
+                    </tr>
+                    <!-- Si aucun incident -->
+                    <tr>
+                        <td colspan="4">Aucun incident récent à afficher.</td>
+                    </tr>
                 </tbody>
             </table>
         </div>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2025 IOT - Tous droits réservés</p>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
