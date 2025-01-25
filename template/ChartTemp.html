@@ -80,13 +80,11 @@
         <h2 class="logo">IOT</h2>
         <ul>
             <li><a href="{% url 'table' %}">Table</a></li>
-            <li><a href="{% url 'myChartTemp' %}">Chart Temp</a></li>
-            <li><a href="{% url 'myChartHum' %}">Chart Hum</a></li>
-          
+            <li><a href="{% url 'myChartTemp' %}">Graphique Temperature</a></li>
+            <li><a href="{% url 'myChartHum' %}">Graphique Humidité</a></li>
             <li><a href="{% url 'incidents' %}">Incidents</a></li>
             <li><a href="{% url 'json' %}">Json</a></li>
-            <li><a href="{% url 'gestion_utilisateurs' %}">Gestion Utilisateurs</a></li>
-
+            <li><a href="{% url 'gestion_utilisateurs' %}">Gestion utilisateurs</a></li>
         </ul>
     </div>
 
@@ -109,41 +107,110 @@
         const aujourdhuiLink = document.getElementById('aujourdhui-link');
         const semaineLink = document.getElementById('semaine-link');
         const moisLink = document.getElementById('mois-link');
+        const ctxTemp = document.getElementById('graphique-temp').getContext('2d');
 
-        // Fonction pour générer des données de température stables autour de 14°C
-        function generateRandomTempData() {
+        let chartInstance = null;  // Variable pour stocker l'instance du graphique
+
+        // Fonction pour générer des heures avec un format aléatoire (hh:mm)
+        function generateRandomTime() {
+            let hour = Math.floor(Math.random() * 24);
+            let minute = Math.floor(Math.random() * 60);
+            return `${hour < 10 ? '0' + hour : hour}:${minute < 10 ? '0' + minute : minute}`;
+        }
+
+        // Fonction pour générer des données de température stables autour de 14°C, avec des heures aléatoires
+        function generateRandomTempData(period) {
             let tempData = [];
             let labels = [];
             let currentDate = new Date();
-            for (let i = 0; i < 10; i++) {
-                labels.push(currentDate.toLocaleString());
-                // Température autour de 14°C avec une petite fluctuation de +/- 2°C
-                tempData.push((14 + (Math.random() * 4 - 2)).toFixed(2));  // Température entre 12°C et 16°C
-                currentDate.setHours(currentDate.getHours() - 1);  // Décale l'heure pour avoir des données historiques
+            let startDate;
+
+            // Choisir le point de départ en fonction du type de période
+            if (period === 'jour') {
+                startDate = new Date();  // Aujourd'hui
+            } else if (period === 'semaine') {
+                startDate = new Date();
+                startDate.setDate(currentDate.getDate() - 7);  // Recule de 7 jours pour la semaine
+            } else if (period === 'mois') {
+                startDate = new Date();
+                startDate.setMonth(currentDate.getMonth() - 1);  // Recule d'un mois
             }
-            return { labels, tempData };
+
+            // Générer les données en fonction de la période
+            let diffInDays = Math.ceil((currentDate - startDate) / (1000 * 60 * 60 * 24));  // Différence en jours
+            let dateList = [];
+
+            // Pour "jour", on génère quelques heures aléatoires de la journée
+            if (period === 'jour') {
+                let selectedTimes = [];
+                while (selectedTimes.length < 6) { // Sélectionne 6 heures aléatoires
+                    let time = generateRandomTime();
+                    if (!selectedTimes.includes(time)) {
+                        selectedTimes.push(time);
+                        dateList.push(time);
+                        tempData.push((14 + (Math.random() * 4 - 2)).toFixed(2));  // Température entre 12°C et 16°C
+                    }
+                }
+
+                // Ajout des heures spécifiques avec les températures données
+                dateList.push("16:06");
+                tempData.push(27);  // Température à 16:06 le 25/01/2025
+                dateList.push("02:09");
+                tempData.push(29);  // Température à 02:09 le 24/01/2025
+                dateList.push("18:17");
+                tempData.push(28);  // Température à 18:17 le 25/01/2025
+            } else {
+                let randomDays = period === 'semaine' ? 5 : Math.min(10, diffInDays);  // 5 jours pour la semaine, 10 pour le mois
+                for (let i = 0; i < randomDays; i++) {
+                    let randomOffset = Math.floor(Math.random() * diffInDays); // Décalage aléatoire
+                    let date = new Date(startDate.getTime() + randomOffset * (1000 * 60 * 60 * 24));
+                    dateList.push(date.toLocaleDateString());
+                    tempData.push((14 + (Math.random() * 4 - 2)).toFixed(2));  // Température entre 12°C et 16°C
+                }
+                // Ajouter une donnée fixe pour le 25 janvier 2025 avec 25°C
+                dateList.push("25/01/2025");
+                tempData.push(25);  // Température à 25°C le 25/01/2025
+            }
+
+            // Trier les heures par ordre croissant
+            const sortedData = dateList.map((time, index) => ({ time, temp: tempData[index] }))
+                .sort((a, b) => {
+                    const [aHour, aMinute] = a.time.split(":").map(num => parseInt(num));
+                    const [bHour, bMinute] = b.time.split(":").map(num => parseInt(num));
+                    return aHour !== bHour ? aHour - bHour : aMinute - bMinute;
+                });
+
+            // Séparer les données triées
+            const sortedLabels = sortedData.map(item => item.time);
+            const sortedTempData = sortedData.map(item => item.temp);
+
+            return { labels: sortedLabels, tempData: sortedTempData };
         }
 
         // Fonction pour charger les données du graphique
-        function loadChartData(url, ctxTemp) {
-            // Utilisation des données générées aléatoirement
-            const data = generateRandomTempData();
+        function loadChartData(period) {
+            const data = generateRandomTempData(period);
             const labels = data.labels;
-            const dataValuesTemp = data.tempData;
+            const tempData = data.tempData;
 
-            // Graphique de température
-            new Chart(ctxTemp, {
+            // Si un graphique existe déjà, le détruire avant de créer un nouveau
+            if (chartInstance) {
+                chartInstance.destroy();
+            }
+
+            // Créer un nouveau graphique
+            chartInstance = new Chart(ctxTemp, {
                 type: 'line',
                 data: {
                     labels: labels,
                     datasets: [{
                         label: 'Température (°C)',
-                        data: dataValuesTemp,
+                        data: tempData,
                         backgroundColor: 'rgba(0, 123, 255, 0.2)',
                         borderColor: 'rgb(0, 123, 255)',
                         borderWidth: 2,
                         pointStyle: 'circle',
-                        pointRadius: 2,
+                        pointRadius: 4,
                         pointBorderColor: 'blue'
                     }]
                 },
@@ -169,19 +236,19 @@
 
         // Événements des boutons
         aujourdhuiLink.addEventListener('click', () => {
-            loadChartData('/chart-data-jour/', document.getElementById('graphique-temp').getContext('2d'));
+            loadChartData('jour');
         });
 
         semaineLink.addEventListener('click', () => {
-            loadChartData('/chart-data-semaine/', document.getElementById('graphique-temp').getContext('2d'));
+            loadChartData('semaine');
         });
 
         moisLink.addEventListener('click', () => {
-            loadChartData('/chart-data-mois/', document.getElementById('graphique-temp').getContext('2d'));
+            loadChartData('mois');
         });
 
-        // Chargement initial des données
-        loadChartData('/chart-data/', document.getElementById('graphique-temp').getContext('2d'));
+        // Chargement initial des données (par défaut, afficher les données d'aujourd'hui)
+        loadChartData('jour');
     </script>
 </body>
 </html>
